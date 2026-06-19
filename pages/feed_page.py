@@ -16,3 +16,4 @@ class FeedPage(BasePage):
     @allure.step("Получение номера заказа в разделе 'В работе'")
     def get_order_in_progress(self):
         return self.get_text(FeedPageLocators.ORDER_IN_PROGRESS)
+    

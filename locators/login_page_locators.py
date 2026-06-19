@@ -5,3 +5,4 @@ class LoginPageLocators:
     EMAIL_FIELD = (By.XPATH, "//input[@name='name']")
     PASSWORD_FIELD = (By.XPATH, "//input[@name='Пароль']")
     LOGIN_BUTTON = (By.XPATH, "//button[text()='Войти']")
+    

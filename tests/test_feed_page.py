@@ -1,6 +1,7 @@
 import allure
-import time
+from config import Config
 from pages.main_page import MainPage
+from pages.login_page import LoginPage
 from pages.feed_page import FeedPage
 
 
@@ -11,22 +12,28 @@ class TestFeedPage:
     def test_feed_page_opens(self, driver):
         main_page = MainPage(driver)
         main_page.click_feed()
-        time.sleep(3)
-        assert "/feed" in driver.current_url
+        assert "/feed" in main_page.get_current_url()
 
     @allure.title("Номер заказа появляется в разделе 'В работе'")
-    def test_order_appears_in_progress(self, driver):
+    def test_order_appears_in_progress(self, driver, registered_user):
         main_page = MainPage(driver)
+        login_page = LoginPage(driver)
         feed_page = FeedPage(driver)
 
-        main_page.click_constructor()
-        time.sleep(2)
+        # Авторизуемся
+        main_page.click_login_button()
+        login_page.login(registered_user["email"], registered_user["password"])
+
+        # Собираем бургер и оформляем заказ
         main_page.add_ingredient_to_order()
-        time.sleep(2)
+        main_page.click_order_button()
 
-        main_page.click_feed()
-        time.sleep(5)
+        # Закрываем модальное окно с номером заказа
+        main_page.close_modal()
 
-        # Проверяем, что страница загрузилась
-        assert "/feed" in driver.current_url
+        # Переходим в ленту заказов прямым переходом по URL
+        main_page.navigate_to(Config.FEED_URL)
+
+        # Проверяем, что мы на странице ленты заказов
+        assert "/feed" in main_page.get_current_url()
         
